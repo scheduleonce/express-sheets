@@ -35,3 +35,13 @@ Route to retrieve data from **events** sheet:
 ```sh
 /events
 ```
+
+## Local Development
+
+1. Edit the .env file with your spreadsheet's configuration.
+2. The **private_key** in the config should be base64 encoded.
+3. Run the server in local mode, this would start server and read configurations from .env file.
+
+```
+    npm run start:local
+```

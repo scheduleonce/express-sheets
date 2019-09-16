@@ -37,7 +37,10 @@ app.use((req, res, next) => {
 
 app.get('*', (req, res, next) => {
   const requestedResource = req.url.replace('/', '');
-  if (Spreadsheet.sheetTabularData && Object.keys(Spreadsheet.sheetTabularData).indexOf(requestedResource) > -1) {
+  if (
+    Spreadsheet.sheetTabularData &&
+    Object.keys(Spreadsheet.sheetTabularData).indexOf(requestedResource) > -1
+  ) {
     res.status(200).json(Spreadsheet.sheetTabularData[requestedResource]);
   } else {
     next();

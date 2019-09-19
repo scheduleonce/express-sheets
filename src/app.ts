@@ -1,22 +1,11 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import morgan from 'morgan';
-import { join } from 'path';
-import { Writable } from 'stream';
-import { SpreadSheet } from '../spreadsheets/spread-sheet';
-import { spreadSheetUpdater } from '../spreadsheets/spread-sheet-updater';
-
-if (process.env.NODE_ENV === 'local') {
-  try {
-    dotenv.config({ path: join(__dirname, '..', '..', '.env') });
-  } catch (e) {
-    console.warn('Env file not loaded', e);
-  }
-}
+import { SpreadSheet } from '../spreadsheets/spreadsheet';
+import { spreadSheetUpdater } from '../spreadsheets/spreadsheet-updater';
 
 const sheetConfig = {
-  sheetId: process.env.sheetId,
-  updateIntervalTime: parseInt(process.env.updateIntervalTime, 10)
+  sheetId: process.env.sheet_id,
+  updateIntervalTime: parseInt(process.env.update_interval_time, 10)
 };
 
 /**
@@ -43,13 +32,7 @@ const app = express();
 
 // set up logging
 app.use((req, res, next) => {
-  const myStream = new Writable({
-    write(chunk, encoding, callback) {
-      console.error(chunk.toString());
-      callback();
-    }
-  });
-  morgan('combined', { stream: myStream })(req, res, next);
+  morgan('combined')(req, res, next);
 });
 
 app.get('*', (req, res, next) => {
@@ -70,7 +53,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 3000;
-SpreadSheet.fetchUpdatesFromGoogleSheet().then(() => {
+SpreadSheet.fetchDataFromGoogleSheet().then(() => {
   app.listen(port, () => {
     console.log('Server running on port %d', port);
   });

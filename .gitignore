@@ -77,7 +77,6 @@ typings/
 
 # vuepress build output
 .vuepress/dist
-dist/
 
 # Serverless directories
 .serverless/
@@ -90,3 +89,6 @@ dist/
 
 # IDE - VSCode
 .vscode/
+
+# build output
+dist/

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc && npm run test:lint",
     "start": "npm run build && node dist/src/app.js",
-    "start:local": "npm run build && NODE_ENV=local node dist/src/app.js",
+    "start:local": "npm run build && NODE_ENV=local node -r dotenv/config dist/src/app.js",
     "test:prettier": "prettier --list-different '**/*.{ts,js,md}'",
     "fix:prettier": "prettier --write '**/*.{ts,js,css,scss,md}'",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts'",

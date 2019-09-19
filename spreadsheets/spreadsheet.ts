@@ -2,8 +2,6 @@ import Sheets from 'node-sheets';
 
 export class SpreadSheet {
   public static sheetTabularData = {};
-  private static lastUpdate = null;
-  private static currUpdateTime = null;
   private static googleSheet: Sheets;
   private static sheetAuthData: any;
 
@@ -20,44 +18,46 @@ export class SpreadSheet {
   }
 
   /**
-   * Check for updates in the spreadsheet. Returns a Promise that resolves to a boolean.
+   * Gets the last update time of the spreadsheet. Returns a Promise that resolves to a timestamp
    */
-  public static checkForUpdate = async (): Promise<boolean> => {
+  public static getLastUpdateTime = async (): Promise<number> => {
     try {
       await SpreadSheet.authorizeSheet();
-      const date = new Date(await SpreadSheet.googleSheet.getLastUpdateDate()).getTime();
-      SpreadSheet.currUpdateTime = date;
-      return !SpreadSheet.lastUpdate ? true : SpreadSheet.lastUpdate < date;
+      return new Date(await SpreadSheet.googleSheet.getLastUpdateDate()).getTime();
     } catch (e) {
       console.error(e);
-      return false;
+      return null;
     }
   };
 
   /**
    * Stores the tabular content of each sheet in the object sheetTabularData with the sheet name as the key.
    */
-  public static fetchUpdatesFromGoogleSheet = async () => {
+  public static fetchDataFromGoogleSheet = async () => {
     try {
       await SpreadSheet.authorizeSheet();
       const sheetNames = await SpreadSheet.getSheetNames();
 
-      sheetNames.forEach(async tableName => {
-        const table = await SpreadSheet.googleSheet.tables(tableName);
-        SpreadSheet.sheetTabularData[tableName] = table.rows
+      const sheets = [];
+      sheetNames.forEach(tableName => {
+        sheets.push(SpreadSheet.googleSheet.tables(tableName));
+      });
+
+      const tables = await Promise.all(sheets);
+      tables.forEach(table => {
+        SpreadSheet.sheetTabularData[table.title] = table.rows
+          // Filtering rows with values in each column. If any of the columns are empty, that row will not be listed
           .filter(record => Object.keys(record).every(key => record[key] && record[key].value))
+          // Formatting the output to look like: {columnName1: "column1 value", columnName2: "column2 value"}
           .map(record => {
             const entry = {};
             Object.keys(record).forEach(k => (entry[k] = record[k].value));
             return entry;
           });
       });
-
-      SpreadSheet.lastUpdate = SpreadSheet.currUpdateTime;
     } catch (e) {
       console.error(e);
     }
-    SpreadSheet.currUpdateTime = null;
   };
 
   /**

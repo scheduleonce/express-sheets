@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
-import { SpreadSheet } from '../spreadsheets/spreadsheet';
-import { spreadSheetUpdater } from '../spreadsheets/spreadsheet-updater';
+import { Spreadsheet } from '../spreadsheets/spreadsheet';
+import { spreadsheetUpdater } from '../spreadsheets/spreadsheet-updater';
 
 const sheetConfig = {
   sheetId: process.env.sheet_id,
@@ -25,8 +25,8 @@ const authData = {
   type: process.env.type
 };
 
-SpreadSheet.initSpreadSheet(sheetConfig.sheetId, authData); // initialize the spreadsheet
-spreadSheetUpdater(sheetConfig.updateIntervalTime); // continuously checks for updates in the spreadsheet after the specified time interval
+Spreadsheet.initSpreadsheet(sheetConfig.sheetId, authData); // initialize the spreadsheet
+spreadsheetUpdater(sheetConfig.updateIntervalTime); // continuously checks for updates in the spreadsheet after the specified time interval
 
 const app = express();
 
@@ -37,8 +37,8 @@ app.use((req, res, next) => {
 
 app.get('*', (req, res, next) => {
   const requestedResource = req.url.replace('/', '');
-  if (SpreadSheet.sheetTabularData && Object.keys(SpreadSheet.sheetTabularData).indexOf(requestedResource) > -1) {
-    res.status(200).json(SpreadSheet.sheetTabularData[requestedResource]);
+  if (Spreadsheet.sheetTabularData && Object.keys(Spreadsheet.sheetTabularData).indexOf(requestedResource) > -1) {
+    res.status(200).json(Spreadsheet.sheetTabularData[requestedResource]);
   } else {
     next();
   }
@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 3000;
-SpreadSheet.fetchDataFromGoogleSheet().then(() => {
+Spreadsheet.fetchDataFromGoogleSheet().then(() => {
   app.listen(port, () => {
     console.log('Server running on port %d', port);
   });

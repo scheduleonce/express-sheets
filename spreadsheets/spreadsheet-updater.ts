@@ -1,19 +1,19 @@
-import { SpreadSheet } from './spreadsheet';
+import { Spreadsheet } from './spreadsheet';
 
 let lastUpdateTime = null;
 
-export const spreadSheetUpdater = interval => {
+export const spreadsheetUpdater = interval => {
   setInterval(async () => {
     // checks for updates in the spreadsheet
-    if (await isSpreadSheetUpdated()) {
-      await SpreadSheet.fetchDataFromGoogleSheet();
+    if (await isSpreadsheetUpdated()) {
+      await Spreadsheet.fetchDataFromGoogleSheet();
     }
   }, interval);
 };
 
-const isSpreadSheetUpdated = async (): Promise<boolean> => {
+const isSpreadsheetUpdated = async (): Promise<boolean> => {
   try {
-    const lastSheetUpdateTime = await SpreadSheet.getLastUpdateTime(); // gets the last update time of the spreadsheet
+    const lastSheetUpdateTime = await Spreadsheet.getLastUpdateTime(); // gets the last update time of the spreadsheet
     if (lastUpdateTime !== lastSheetUpdateTime) {
       lastUpdateTime = lastSheetUpdateTime;
       return true;

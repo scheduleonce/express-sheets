@@ -1,6 +1,6 @@
 import Sheets from 'node-sheets';
 
-export class SpreadSheet {
+export class Spreadsheet {
   public static sheetTabularData = {};
   private static googleSheet: Sheets;
   private static sheetAuthData: any;
@@ -12,9 +12,9 @@ export class SpreadSheet {
    * @param sheetId
    * @param authData
    */
-  public static initSpreadSheet(sheetId: string, authData: any) {
-    SpreadSheet.googleSheet = new Sheets(sheetId);
-    SpreadSheet.sheetAuthData = authData;
+  public static initSpreadsheet(sheetId: string, authData: any) {
+    Spreadsheet.googleSheet = new Sheets(sheetId);
+    Spreadsheet.sheetAuthData = authData;
   }
 
   /**
@@ -22,8 +22,8 @@ export class SpreadSheet {
    */
   public static getLastUpdateTime = async (): Promise<number> => {
     try {
-      await SpreadSheet.authorizeSheet();
-      return new Date(await SpreadSheet.googleSheet.getLastUpdateDate()).getTime();
+      await Spreadsheet.authorizeSheet();
+      return new Date(await Spreadsheet.googleSheet.getLastUpdateDate()).getTime();
     } catch (e) {
       console.error(e);
       return null;
@@ -35,17 +35,17 @@ export class SpreadSheet {
    */
   public static fetchDataFromGoogleSheet = async () => {
     try {
-      await SpreadSheet.authorizeSheet();
-      const sheetNames = await SpreadSheet.getSheetNames();
+      await Spreadsheet.authorizeSheet();
+      const sheetNames = await Spreadsheet.getSheetNames();
 
       const sheets = [];
       sheetNames.forEach(tableName => {
-        sheets.push(SpreadSheet.googleSheet.tables(tableName));
+        sheets.push(Spreadsheet.googleSheet.tables(tableName));
       });
 
       const tables = await Promise.all(sheets);
       tables.forEach(table => {
-        SpreadSheet.sheetTabularData[table.title] = table.rows
+        Spreadsheet.sheetTabularData[table.title] = table.rows
           // Filtering rows with values in each column. If any of the columns are empty, that row will not be listed
           .filter(record => Object.keys(record).every(key => record[key] && record[key].value))
           // Formatting the output to look like: {columnName1: "column1 value", columnName2: "column2 value"}
@@ -65,13 +65,13 @@ export class SpreadSheet {
    * Returns a Promise that resolves to an array of sheet names.
    */
   private static getSheetNames = async (): Promise<string[]> => {
-    return await SpreadSheet.googleSheet.getSheetsNames();
+    return await Spreadsheet.googleSheet.getSheetsNames();
   };
 
   /**
    * Performs Google APIs authentication with the given sheetAuthData.
    */
   private static authorizeSheet = () => {
-    SpreadSheet.googleSheet.authorizeJWT(SpreadSheet.sheetAuthData);
+    Spreadsheet.googleSheet.authorizeJWT(Spreadsheet.sheetAuthData);
   };
 }

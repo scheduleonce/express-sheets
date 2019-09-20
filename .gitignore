@@ -89,3 +89,6 @@ typings/
 
 # IDE - VSCode
 .vscode/
+
+# build output
+dist/

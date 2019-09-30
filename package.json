@@ -17,7 +17,11 @@
     "sheet"
   ],
   "author": "Yukti Arora <yukti.arora@oncehub.com> (https://www.oncehub.com/)",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scheduleonce/express-sheets.git"
+  },
   "dependencies": {
     "dotenv": "^8.1.0",
     "express": "^4.17.1",

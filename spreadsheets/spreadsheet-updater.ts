@@ -3,12 +3,16 @@ import { Spreadsheet } from './spreadsheet';
 let lastUpdateTime = null;
 
 export const spreadsheetUpdater = interval => {
-  setInterval(async () => {
-    // checks for updates in the spreadsheet
-    if (await isSpreadsheetUpdated()) {
-      await Spreadsheet.fetchDataFromGoogleSheet();
-    }
-  }, interval);
+  try {
+    setInterval(async () => {
+      // checks for updates in the spreadsheet
+      if (await isSpreadsheetUpdated()) {
+        await Spreadsheet.fetchDataFromGoogleSheet();
+      }
+    }, interval);
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const isSpreadsheetUpdated = async (): Promise<boolean> => {

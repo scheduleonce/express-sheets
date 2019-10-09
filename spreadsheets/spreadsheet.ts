@@ -38,6 +38,7 @@ export class Spreadsheet {
       await Spreadsheet.authorizeSheet();
       const sheetNames = await Spreadsheet.getSheetNames();
 
+      Spreadsheet.sheetTabularData = {};
       const sheets = [];
       sheetNames.forEach(tableName => {
         sheets.push(Spreadsheet.googleSheet.tables(tableName));
@@ -45,7 +46,7 @@ export class Spreadsheet {
 
       const tables = await Promise.all(sheets);
       tables.forEach(table => {
-        Spreadsheet.sheetTabularData[table.title] = table.rows
+        Spreadsheet.sheetTabularData[table.title.toLowerCase()] = table.rows
           // Filtering rows with values in each column. If any of the columns are empty, that row will not be listed
           .filter(record => Object.keys(record).every(key => record[key] && record[key].value))
           // Formatting the output to look like: {columnName1: "column1 value", columnName2: "column2 value"}

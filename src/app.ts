@@ -35,8 +35,8 @@ app.use((req, res, next) => {
   morgan('combined')(req, res, next);
 });
 
-app.get('*', (req, res, next) => {
-  const requestedResource = req.url.replace('/', '');
+app.get('/:sheetId', (req, res, next) => {
+  const requestedResource = req.params.sheetId.toLowerCase();
   if (Spreadsheet.sheetTabularData && Object.keys(Spreadsheet.sheetTabularData).indexOf(requestedResource) > -1) {
     res.status(200).json(Spreadsheet.sheetTabularData[requestedResource]);
   } else {

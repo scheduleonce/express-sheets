@@ -65,8 +65,8 @@ export class Spreadsheet {
    * Gets the names of the sheets in the spreadsheet.
    * Returns a Promise that resolves to an array of sheet names.
    */
-  private static getSheetNames = async (): Promise<string[]> => {
-    return await Spreadsheet.googleSheet.getSheetsNames();
+  private static getSheetNames = (): Promise<string[]> => {
+    return Spreadsheet.googleSheet.getSheetsNames();
   };
 
   /**

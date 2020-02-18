@@ -1,5 +1,5 @@
 # express-sheets build
-FROM node:10-alpine AS build
+FROM node:12.16.0-alpine3.10 AS build
 RUN mkdir -p /usr/src/express-sheets
 WORKDIR /usr/src/express-sheets
 COPY package*.json /usr/src/express-sheets/
@@ -8,14 +8,14 @@ COPY . /usr/src/express-sheets
 RUN npm run build
 
 # production dependencies
-FROM node:10-alpine AS dependencies
+FROM node:12.16.0-alpine3.10 AS dependencies
 RUN mkdir -p /usr/src/express-sheets
 WORKDIR /usr/src/express-sheets
 COPY package*.json /usr/src/express-sheets/
 RUN npm install --production
 
 # express-sheets image build
-FROM node:10-alpine
+FROM node:12.16.0-alpine3.10
 RUN mkdir -p /usr/src/express-sheets
 WORKDIR /usr/src/express-sheets
 COPY --from=dependencies /usr/src/express-sheets/node_modules ./node_modules/

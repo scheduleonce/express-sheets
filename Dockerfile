@@ -1,5 +1,5 @@
 # express-sheets build
-FROM node:12.16.0-alpine3.10 AS build
+FROM node:12.18.0-alpine3.10 AS build
 RUN mkdir -p /usr/src/express-sheets
 WORKDIR /usr/src/express-sheets
 COPY package*.json /usr/src/express-sheets/
